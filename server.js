@@ -9,7 +9,7 @@ const app = express()
 app.use(express.json())
 app.use(cors())
 app.use(express.urlencoded({ extended: true }))
-mongoose.connect(process.env.MONGO_URL)
+mongoose.connect(process.env.MONGODB_URL)
     .then(() => console.log('database connected'))
     .catch((error) => console.log('database cannot connected', error))
 const peoplesschema = new mongoose.Schema({
@@ -43,7 +43,7 @@ app.post('/register', async (request, response) => {
 app.post('/login',async(request,response)=>{
     try{
         const{email,password}=request.body
-        const user= await People.findone({email})
+        const user= await People.findOne({email})
         if(!user){
             return response.status(400).json({message:'wrong email'})
         }
@@ -67,23 +67,24 @@ app.get('/peoples',async(request,response)=>{
     try{
         const data=await People.find()
         response.status(200).json({message:'people found',data})
+        
     }
     catch(error){
         response.status(500).json({message:'cannot find people',error})
     }
 })
-app.post('/peoples',async(request,response)=>{
-    try{
-        const{name,email,password}=request.body
+// app.post('/peoples',async(request,response)=>{
+//     try{
+//         const{name,email,password}=request.body
         
-        const data= People({name,email,password})
-        await data.save()
-        response.status(200).json({message:'people created',data})
-    }
-    catch(error){
-        response.status(500).json({message:'cannot create people',error})
-    }
-})
+//         const data= People({name,email,password})
+//         await data.save()
+//         response.status(200).json({message:'people created',data})
+//     }
+//     catch(error){
+//         response.status(500).json({message:'cannot create people',error})
+//     }
+// })
 app.put('/peoples/:id',async(request,response)=>{
     try{
         const id = request.params.id
